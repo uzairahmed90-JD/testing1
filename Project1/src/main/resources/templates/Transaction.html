@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Transactions | E-Commerce</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 ,a{
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        form {
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        input[type="text"], input[type="number"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #28a745;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<h1>All Transactions</h1>
+
+<!-- Transaction Table -->
+<table border="1" cellpadding="10">
+    <thead>
+    <tr>
+<!--        <th>ID</th>-->
+        <th>User ID</th>
+        <th>Broker</th>
+        <th>Soda c</th>
+        <th>Rate (per KG)</th>
+        <th>Weight (KG)</th>
+        <th>Bags</th>
+        <th>Amount</th>
+        <th>Truck No</th>
+        <th>Date</th>
+        <th>Type</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="transaction : ${transactions}">
+<!--        <td th:text="${transaction.transactionId}"></td>-->
+        <td th:text="${transaction.user?.userId}"></td> <!-- User ID column added -->
+        <td th:text="${transaction.broker}"></td>
+        <td th:text="${transaction.referenceNumber}"></td>
+        <td th:text="${transaction.rate}"></td>
+        <td th:text="${transaction.weight}"></td>
+        <td th:text="${transaction.bags}"></td>
+        <td th:text="${transaction.amount}"></td>
+        <td th:text="${transaction.truckNumber}"></td>
+        <td th:text="${#temporals.format(transaction.date, 'yyyy-MM-dd')}"></td>
+        <td th:text="${transaction.type}"></td>
+        <td> <a th:href="@{/transactions/search(userId=${transaction.user?.userId})}" style="background-color:#007bff; color:white; padding:8px 12px; text-decoration:none; border-radius:5px;">Create Transactions</a></td>
+    </tr>
+    </tbody>
+</table>
+
+<hr>
+
+<!-- Add New Transaction Form -->
+<!--<h2>Add New Transaction</h2>-->
+<!--<a th:href="@{/transactions/search}">Create Transactions</a>-->
+<br>
+<a th:href="@{/}">Back to Home</a>
+
+<!-- JavaScript for Auto-Calculation -->
+<script>
+    const weightInput = document.getElementById('weight');
+    const rateInput = document.getElementById('rate');
+    const bagsInput = document.getElementById('bags');
+    const amountInput = document.getElementById('amount');
+
+    function calculateFields() {
+        const weight = parseFloat(weightInput.value) || 0;
+        const rate = parseFloat(rateInput.value) || 0;
+        const bags = weight / 40;
+        const amount = bags * rate;
+
+        bagsInput.value = bags.toFixed(2);
+        amountInput.value = amount.toFixed(2);
+    }
+
+    weightInput.addEventListener('input', calculateFields);
+    rateInput.addEventListener('input', calculateFields);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bags</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        form {
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        input[type="text"], input[type="number"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #28a745;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>shift 1</th>
+        <th>shift 2</th>
+        <th>shift 3</th>
+        <th>shift 4</th>
+        <th>Date</th>
+        <th>total per day</th>
+        <th>tatal bags</th>
+
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="tx : ${bags}">
+        <td th:text="${tx.id}"></td>
+        <td th:text="${tx.shift1}"></td>
+        <td th:text="${tx.shift2}"></td>
+        <td th:text="${tx.shift3}"></td>
+        <td th:text="${tx.shift4}"></td>
+        <td th:text="${#temporals.format(tx.date, 'yyyy-MM-dd')}"></td>
+        <td th:text="${tx.perdaybag}"></td>
+        <td th:text="${tx.totalBags}"></td>
+
+    </tr>
+    </tbody>
+</table>
+
+<form th:action="@{/bags/bagcreate}"  th:object="${bag}" method="post">
+
+    <label>shift 1</label>
+    <input type="number" th:field="*{shift1}" id="shift1" required>
+    <label>shift 2</label>
+    <input type="number" th:field="*{shift2}" id="shift2" required>
+    <label>shift 3</label>
+    <input type="number" th:field="*{shift3}" id="shift3" required>
+    <label>shift 3</label>
+    <input type="number" th:field="*{shift4}" id="shift4" required>
+    <label>date</label>
+    <input type="date" th:field="*{date}" required />
+    <label>total badg per day</label>
+    <input type="number" th:field="*{perdaybag}" id="perdaybag" readonly style="background-color: #e9ecef;">
+    <button type="submit">Save Bag</button>
+</form>
+
+<form th:action="@{/bags/salebags}"  th:object="${bag}" method="post">
+
+    <label>minus</label>
+    <input type="number" th:field="*{minus}" id="minus" required>
+
+    <label>date</label>
+    <input type="date" th:field="*{date}" required />
+    <button type="submit">Save Bag</button>
+</form>
+
+<div style="text-align:center;">
+    <a th:href="@{/}">Back to Home</a>
+</div>
+
+
+<script>
+    const shift1 = document.getElementById("shift1");
+    const shift2 = document.getElementById("shift2");
+    const shift3 = document.getElementById("shift3");
+    const shift4 = document.getElementById("shift4");
+    const perdaybag = document.getElementById("perdaybag");
+
+    function updatePerDayBag() {
+        const s1 = parseInt(shift1.value) || 0;
+        const s2 = parseInt(shift2.value) || 0;
+        const s3 = parseInt(shift3.value) || 0;
+        const s4 = parseInt(shift4.value) || 0;
+        perdaybag.value = s1 + s2 + s3 + s4;
+    }
+
+    // Attach input event listeners
+    [shift1, shift2, shift3, shift4].forEach(input => {
+        input.addEventListener('input', updatePerDayBag);
+    });
+</script>
+
+</body>
+</html>

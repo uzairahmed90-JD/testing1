@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title></title>
+</head>
+<body>
+
+<h2>Add New User</h2>
+<form th:action="@{/users/update}" th:object="${user}" method="post">
+    <label>User Id</label>
+    <input type="number" th:field="*{userId}" readonly>
+    <label>First Name:</label><br>
+    <input type="text" th:field="*{firstName}" required><br><br>
+
+    <label>Last Name:</label><br>
+    <input type="text" th:field="*{lastName}" required><br><br>
+
+    <label>User Type:</label>
+    <select th:field="*{userType}" required style="width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+        <option value="">-- Select User Type --</option>
+        <option value="Seller">Seller</option>
+        <option value="Buyer">Buyer</option>
+    </select>
+
+    <button type="submit">Add User</button>
+</form>
+
+</body>
+</html>

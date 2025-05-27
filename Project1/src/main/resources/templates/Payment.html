@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Payments | E-Commerce</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        form {
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        input[type="text"], input[type="number"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #28a745;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Payment Management</h1>
+
+    <!-- Search Form -->
+
+        <h2>Search Payments by User</h2>
+        <form method="get" th:action="@{/payments}" style="text-align: center;margin-bottom: 20px">
+
+            <select name="userId" id="userId" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
+                <option value="">-- Select User --</option>
+                <option th:each="user : ${users}"
+                        th:value="${user.userId}"
+                        th:text="${user.firstName + ' ' + user.lastName + ' (ID: ' + user.userId + ')'}"
+                        th:selected="${user.userId == selectedUserId}"
+                >
+                </option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+
+
+    <h2 th:if="${selectedUserId != null}" style="text-align:center;">
+        Payment for
+        <span th:each="user : ${users}" th:if="${user.userId == selectedUserId}"
+              th:text="${user.firstName + ' ' + user.lastName}"></span>
+    </h2>
+
+
+    <!-- Payment Table -->
+    <section class="table-section">
+
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Broker</th>
+                <th>Total Amount</th>
+                <th>Paid</th>
+                <th>Balance || Remain</th>
+                <th>Advance</th>
+                <th>Date</th>
+                <th>Reference</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="payment : ${payments}">
+                <td th:text="${payment.paymentId}"></td>
+                <td th:text="${payment.user?.userId}"></td>
+                <td th:text="${payment.broker}"></td>
+                <td th:text="${payment.totalAmount}"></td>
+                <td th:text="${payment.paidAmount}"></td>
+                <td th:text="${payment.balance}"></td>
+                <td th:text="${payment.advance}"></td>
+                <td th:text="${#temporals.format(payment.date, 'yyyy-MM-dd')}"></td>
+                <td th:text="${payment.refrence}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Add Payment Form -->
+    <section class="card">
+        <h2>Add New Payment</h2>
+        <form th:action="@{/payments}" th:object="${payment}" method="post">
+            <label for="userIdForm">Select User:</label>
+            <select name="userId" id="userIdForm" required>
+                <option value="">-- Select User --</option>
+                <option th:each="user : ${users}"
+                        th:value="${user.userId}"
+                        th:text="${user.firstName + ' ' + user.lastName + ' (ID: ' + user.userId + ')'}">
+                </option>
+            </select>
+
+            <label>Broker:</label>
+            <input type="text" th:field="*{broker}" required />
+
+            <label>Total Amount:</label>
+            <input type="number" readonly th:field="*{totalAmount}" required />
+
+            <label>Paid Amount:</label>
+            <input type="number" th:field="*{paidAmount}" required />
+
+            <label>Type:</label>
+            <select th:field="*{type}" required>
+                <option value="">-- Select Type --</option>
+                <option value="Purchase">Purchase</option>
+                <option value="Sale">Sale</option>
+            </select>
+
+            <label>Advance:</label>
+            <input type="number" th:field="*{advance}" value="0" />
+
+            <label>Reference:</label>
+            <input type="text" th:field="*{refrence}" />
+
+            <label>Date:</label>
+            <input type="date" th:field="*{date}" required />
+
+            <button type="submit">Save Payment</button>
+        </form>
+    </section>
+
+    <div class="actions">
+        <a th:href="@{/}" class="btn-secondary">Back to Home</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Users | E-Commerce</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f8f9fa;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    table, th, td {
+      border: 1px solid #dee2e6;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #28a745;
+      color: white;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    form {
+      width: 50%;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<h1>All Users</h1>
+
+<!-- User Table -->
+<table border="1" cellpadding="10">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>User Type</th>
+    <th>Balance</th>
+    <th>Total Paid</th>
+    <th>Total Amount</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="user : ${users}">
+    <td th:text="${user.userId}"></td>
+    <td th:text="${user.firstName}"></td>
+    <td th:text="${user.lastName}"></td>
+    <td th:text="${user.userType}"></td>
+    <td th:text="${user.balance}"></td>
+    <td th:text="${user.totalPaid}"></td>
+    <td th:text="${user.totalAmount}"></td>
+    <td> <a th:href="@{/transactions/search(userId=${user.userId})}" style="background-color:#007bff; color:white; padding:8px 12px; text-decoration:none; border-radius:5px;">
+      Transactions</a></td>
+
+    <td> <a th:href="@{/payments/search(userId=${user.userId})}" style="background-color:#007bff; color:white; padding:8px 12px; text-decoration:none; border-radius:5px;">
+      Payment</a></td>
+    <td><a th:href="@{/users/updateUse/{id}(id=${user.userId})}">Update</a></td>
+  </tr>
+
+  </tbody>
+</table>
+
+<hr>
+
+<!-- Add New User Form -->
+<h2>Add New User</h2>
+<form th:action="@{/users}" th:object="${user}" method="post">
+
+  <label>First Name:</label><br>
+  <input type="text" th:field="*{firstName}" required><br><br>
+
+  <label>Last Name:</label><br>
+  <input type="text" th:field="*{lastName}" required><br><br>
+
+  <label>User Type:</label>
+  <select th:field="*{userType}" required style="width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+    <option value="">-- Select User Type --</option>
+    <option value="Seller">Seller</option>
+    <option value="Buyer">Buyer</option>
+  </select>
+
+  <button type="submit">Add User</button>
+</form>
+<br>
+<a th:href="@{/users/updateUse}" style="background-color:#007bff; color:white; padding:8px 12px; text-decoration:none; border-radius:5px;">
+  Payment</a></td>
+
+<br>
+<a th:href="@{/}">Back to Home</a>
+
+</body>
+</html>

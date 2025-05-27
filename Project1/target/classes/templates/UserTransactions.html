@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Transactions</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        form {
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        input[type="text"], input[type="number"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #28a745;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Search User Transactions</h2>
+<form method="get" th:action="@{/transactions/search}" style="text-align:center; margin-bottom: 20px;">
+    <label>Select User:</label>
+    <select name="userId" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
+        <option value="">-- Select User --</option>
+        <option th:each="user : ${users}"
+                th:value="${user.userId}"
+                th:text="${user.firstName + ' ' + user.lastName + ' (ID: ' + user.userId + ')'}"
+<!--                th:selected="${user.userId == selectedUserId}"-->
+        >
+        </option>
+    </select>
+    <button type="submit" style="padding:8px 16px;">Search</button>
+</form>
+
+
+<h2 th:if="${selectedUserId != null}" style="text-align:center;">
+    Transactions for
+    <span th:each="user : ${users}" th:if="${user.userId == selectedUserId}"
+          th:text="${user.firstName + ' ' + user.lastName}"></span>
+</h2>
+
+<table>
+
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>User Id</th>
+<!--        <th>Broker</th>-->
+        <th>Rate</th>
+        <th>Weight</th>
+        <th>Bags</th>
+        <th>Amount</th>
+        <th>Truck No</th>
+        <th>Date</th>
+        <th>Reference</th>
+        <th>type</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:each="tx : ${transactions}">
+        <td th:text="${tx.transactionId}"></td>
+        <td th:text="${tx.user?.userId}"></td>
+<!--        <td th:text="${tx.broker}"></td>-->
+        <td th:text="${tx.rate}"></td>
+        <td th:text="${tx.weight}"></td>
+        <td th:text="${tx.bags}"></td>
+        <td th:text="${tx.amount}"></td>
+        <td th:text="${tx.truckNumber}"></td>
+<!--        <td th:text="${#temporals.format(transaction.date, 'yyyy-MM-dd')}"></td>-->
+        <td th:text="${#temporals.format(tx.date, 'yyyy-MM-dd')}"></td>
+        <td th:text="${tx.referenceNumber}"></td>
+        <td th:text="${tx.type}"></td>
+    </tr>
+    </tbody>
+</table>
+<br>
+
+<h2 style="text-align:center;">Add New Transaction</h2>
+
+<form th:action="@{/transactions}"  th:object="${transaction}" method="post">
+
+    <label>Select User:</label>
+    <select name="userId" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
+        <option value="">-- Select User --</option>
+        <option th:each="user : ${users}"
+                th:value="${user.userId}"
+                th:text="${user.firstName + ' ' + user.lastName + ' (ID: ' + user.userId + ')'}">
+        </option>
+    </select>
+    <label>Broker Name:</label>
+    <input type="text" th:field="*{broker}" placeholder="Enter Broker Name" required>
+
+    <label>Rate (per 40 KG):</label>
+    <input type="number" step="0.01" th:field="*{rate}" id="rate" placeholder="Enter Rate" required>
+
+    <label>Weight (KG):</label>
+    <input type="number" step="0.01" th:field="*{weight}" id="weight" placeholder="Enter Weight" required>
+
+    <label>Bags (Auto Calculate):</label>
+    <input type="number" th:field="*{bags}" id="bags" readonly style="background-color: #e9ecef;">
+
+    <label>Amount (Auto Calculate):</label>
+    <input type="number" th:field="*{amount}" id="amount" readonly style="background-color: #e9ecef;">
+
+    <label>Truck Number:</label>
+    <input type="text" th:field="*{truckNumber}" placeholder="Enter Truck Number" required>
+
+    <label>Reference :</label>
+    <input type="text" th:field="*{referenceNumber}" placeholder="Enter Reference (Optional)">
+
+    <label>Type:</label>`
+    <select th:field="*{type}" required>
+        <option value="">-- Select Type --</option>
+        <option value="Purchase">Purchase</option>
+        <option value="Sale">Sale</option>
+    </select>
+    <!--    <label>Date:</label>-->
+    <!--    <td th:text="${#temporals.format(transaction.date, 'dd-MM-yyyy')}"></td>-->
+    <label>Date:</label>
+    <input type="date" th:field="*{date}" required />
+
+<!--    <label>User ID:</label><br>-->
+<!--    <input type="number" name="userId" required><br><br>-->
+
+    <button type="submit">Save Transaction</button>
+
+</form>
+
+<div style="text-align:center;">
+    <a th:href="@{/}">Back to Home</a>
+</div>
+
+
+
+<!-- JavaScript for Auto-Calculation -->
+<script>
+    const weightInput = document.getElementById('weight');
+    const rateInput = document.getElementById('rate');
+    const bagsInput = document.getElementById('bags');
+    const amountInput = document.getElementById('amount');
+
+    function calculateFields() {
+        const weight = parseFloat(weightInput.value) || 0;
+        const rate = parseFloat(rateInput.value) || 0;
+        const bags = weight / 40;
+        const amount = bags * rate;
+
+        bagsInput.value = bags.toFixed(2);
+        amountInput.value = amount.toFixed(2);
+    }
+
+    weightInput.addEventListener('input', calculateFields);
+    rateInput.addEventListener('input', calculateFields);
+</script>
+
+</body>
+</html>
